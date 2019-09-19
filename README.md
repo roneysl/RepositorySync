@@ -8,4 +8,4 @@ Powershell script to synchronize two master branches from different repositories
 2. Create a personal access token in the target Azure DevOps server
    - Again, this needs to be secured
 3. To use the command, use this syntax:
-   - `CloneRepo.ps1 -SourceURL "https://innovasystems.visualstudio.com/xxx/_git/" -SourcePAT "PersonalAccessToken" -TargetURL "https://innovasystems.visualstudio.com/xxx/_git" -TargetPAT "PersonalAccessToken" -SourceRepository "Source" - TargetRepository "Target"`
+   - `CloneRepo.ps1 -SourceURL "https://example.visualstudio.com/xxx/_git/" -SourcePAT "PersonalAccessToken" -TargetURL "https://example.visualstudio.com/xxx/_git" -TargetPAT "PersonalAccessToken" -SourceRepository "Source" - TargetRepository "Target"`
