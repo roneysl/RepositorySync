@@ -5,7 +5,8 @@
     [string]$TargetURL,
     [string]$TargetPAT,
     [string]$TempGitPath = "D:\TempGit",
-    [string]$Repository
+    [string]$SourceRepository,
+    [string]$TargetRepository
     )
 
 $ErrorActionPreference = 'Stop'
@@ -30,21 +31,25 @@ if ($TempGitPath -eq "") {
     Write-Error "Temporary path for GIT repository is Required"
     exit 999
 }
-if ($Repository -eq "") {
-    Write-Error "Repository is Required"
+if ($SourceRepository -eq "") {
+    Write-Error "Source Repository is Required"
+    exit 999
+}
+if ($TargetRepository -eq "") {
+    Write-Error "Target Repository is Required"
     exit 999
 }
 
 
 #https://innovasystems.visualstudio.com/DefaultCollection/DRRS-N/_git/NavyReadiness-MenuService
 
-$sourceRepoPath = Join-Path $TempGitPath ($Repository + "_source")
+$sourceRepoPath = Join-Path $TempGitPath ($SourceRepository + "_source")
 if (-not (Test-Path $sourceRepoPath)) {
     New-Item $sourceRepoPath -ItemType Directory
 } else {
    Get-ChildItem -Path $sourceRepoPath -Recurse | Remove-Item -force -recurse
 }
-$targetRepoPath = Join-Path $TempGitPath "ShawnMenuService_target"
+$targetRepoPath = Join-Path $TempGitPath ($TargetRepository + "_target")
 if (-not (Test-Path $targetRepoPath)) {
     New-Item $targetRepoPath -ItemType Directory
 } else {
@@ -54,12 +59,11 @@ if (-not (Test-Path $targetRepoPath)) {
 
 $programDirectory = $PWD
 
-$drrsnUrlGitPart = "DRRS-N/_git/" + $Repository
-[string]$sourceRepoUrl = (new-object -TypeName 'System.Uri' -ArgumentList ([System.Uri] $SourceURL),$drrsnUrlGitPart).AbsoluteUri
+
+[string]$sourceRepoUrl = (new-object -TypeName 'System.Uri' -ArgumentList ([System.Uri] $SourceURL),$SourceRepository).AbsoluteUri
 $sourceRepoUrl = $sourceRepoUrl.Replace("https://", "https://" + $SourcePAT + "@")
 
-$targetUrlGitPart = "DRRS-N/_git/" + "ShawnMenuService"
-[string]$targetRepoUrl = (new-object -TypeName 'System.Uri' -ArgumentList ([System.Uri] $TargetURL),$targetUrlGitPart).AbsoluteUri
+[string]$targetRepoUrl = (new-object -TypeName 'System.Uri' -ArgumentList ([System.Uri] $TargetURL),$TargetRepository).AbsoluteUri
 $targetRepoUrl = $targetRepoUrl.Replace("https://", "https://" + $TargetPAT + "@")
 
 Set-Location -Path $sourceRepoPath -PassThru
@@ -68,9 +72,8 @@ git clone -q $sourceRepoUrl
 Set-Location -Path $targetRepoPath -PassThru
 git clone -q $targetRepoUrl
 
-$sourceFiles = Join-Path $sourceRepoPath $Repository
-$targetFiles = Join-Path $targetRepoPath "ShawnMenuService"
-
+$sourceFiles = Join-Path $sourceRepoPath $SourceRepository
+$targetFiles = Join-Path $targetRepoPath $TargetRepository
 
 & "$PSScriptRoot\Sync-Folder.ps1" -SourceFolder $sourceFiles -TargetFolders $targetFiles -Exceptions "*.git"
 
