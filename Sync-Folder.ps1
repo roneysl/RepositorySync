@@ -124,7 +124,7 @@ function Write-Log
         [switch]$Heading=$False,
         [switch]$Emphasis=$False,
         [switch]$WriteHost=$False,
-        [switch]$NoFileWrite=$False
+        [switch]$NoFileWrite=$true
     )
     BEGIN
     {
