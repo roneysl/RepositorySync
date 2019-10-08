@@ -73,8 +73,9 @@ Write-Host "pull origin"
 git remote add target $targetRepoUrl
 Write-Host "Added remote"
 
-git push target --tags -q -u -f
 git push target --all -q -u -f
+git push target --tags -q -u -f
+
 Write-Host "push target"
 
 Set-Location $programDirectory -PassThru
