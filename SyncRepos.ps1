@@ -9,7 +9,7 @@ param (
     [string]$TargetRepository
     )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'SilentlyContinue'
 
 if ($SourceURL -eq "") {
     Write-Error "Source URL is Required"
